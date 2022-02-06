@@ -15,13 +15,14 @@
 
 
 (defrecord Worker
-  [options flag task task2]
+  [options flag task]
 
   component/Lifecycle
   (start [this]
     (let [flag (atom true)
           this (assoc this :flag flag)
-          task (task2 this)]
+          task-to-run (:task-to-run options)
+          task (task-to-run this)]
       (println this)
       (assoc this :task task)))
 
@@ -40,8 +41,10 @@
         (task-fn this))))
   )
 
-(def make-worker (map->Worker {:task2 make-task2}))
+;(def make-worker (map->Worker {:task2 make-task2}))
+(def make-worker (map->Worker {:options {:task-to-run make-task2} }))
 
 (def started (component/start make-worker))
 (type started)
+
 ;(component/stop started)
